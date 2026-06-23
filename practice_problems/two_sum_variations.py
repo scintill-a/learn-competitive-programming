@@ -47,41 +47,44 @@ def two_sum(nums: list[int], target: int) -> list[int]:
 
 
 # ============================================================================
-# Variation 2: No-Loops Version (Set Comprehension & Intersection)
+# Variation 2: No-Loops Version (Recursive Approach)
 # ============================================================================
 
-def two_sum_exists_set(nums: list[int], target: int) -> bool:
+def two_sum_recursive(nums: list[int], target: int, index: int = 0, seen: dict = None) -> list[int]:
     """
-    Return True if ANY pair of numbers in nums sums to target.
-    Uses set intersection — no explicit loops (comprehension only).
+    Return indices of the two numbers such that they add up to target.
+    Uses recursion to eliminate all explicit `for` or `while` loops.
 
     Example:
-        >>> two_sum_exists_set([2, 7, 11, 15], 9)
-        True
-        >>> two_sum_exists_set([1, 2, 3], 10)
-        False
+        >>> two_sum_recursive([2, 7, 11, 15], 9)
+        [0, 1]
 
-    Key Insight: If a + b = target, then both a and (target-a) must be in nums.
-    Create a set of nums and a set of complements. If they intersect → pair exists.
+    Key Insight: We can pass the index and the 'seen' hash map through
+    recursive function calls to iterate over the array without loops.
 
-    CAUTION: Handle the case where target = 2*x and x appears only once.
-    E.g., nums=[3, 5], target=6 → 3+3=6 but only one 3 exists. Must check count.
-
-    Time:  O(n) — set creation is O(n), intersection is O(min(n,m))
-    Space: O(n) — two sets of size n
+    Time:  O(n) — we visit each element at most once.
+    Space: O(n) — for the hash map and the recursion call stack.
     """
-    num_set = set(nums)
-    complements = {target - n for n in nums}
-    overlap = num_set & complements  # set intersection
-
-    for val in overlap:
-        comp = target - val
-        if val != comp:
-            return True
-        # val == comp means target = 2 * val, need at least 2 occurrences
-        if nums.count(val) >= 2:
-            return True
-    return False
+    # Initialize the hash map on the first call
+    if seen is None:
+        seen = {}
+        
+    # Base case: if we are out of bounds, no solution exists
+    if index >= len(nums):
+        return []
+    
+    current_num = nums[index]
+    complement = target - current_num
+    
+    # Check if the needed complement has already been seen
+    if complement in seen:
+        return [seen[complement], index]
+    
+    # Store the current number's index in the hash map
+    seen[current_num] = index
+    
+    # Recursively move to the next index instead of looping
+    return two_sum_recursive(nums, target, index + 1, seen)
 
 
 def two_sum_exists_any(nums: list[int], target: int) -> bool:
@@ -565,12 +568,12 @@ if __name__ == "__main__":
     assert two_sum([3, 3], 6) == [0, 1]
     print("   ✅ All tests passed!")
 
-    # Variation 2: No-Loops (Set)
-    print("\n2️⃣  No-Loops Version (Set Intersection)")
-    assert two_sum_exists_set([2, 7, 11, 15], 9) == True
-    assert two_sum_exists_set([1, 2, 3], 10) == False
-    assert two_sum_exists_set([3, 3], 6) == True
-    assert two_sum_exists_set([3, 5], 6) == False  # Only one 3
+    # Variation 2: No-Loops (Recursive)
+    print("\n2️⃣  No-Loops Version (Recursive Approach)")
+    assert two_sum_recursive([2, 7, 11, 15], 9) == [0, 1]
+    assert two_sum_recursive([1, 2, 3], 10) == []
+    assert two_sum_recursive([3, 3], 6) == [0, 1]
+    assert two_sum_recursive([3, 5], 6) == []
     print("   ✅ All tests passed!")
 
     assert two_sum_no_loops_clean([2, 7, 11, 15], 9) == True

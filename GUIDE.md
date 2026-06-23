@@ -299,19 +299,25 @@ def two_sum(nums, target):
 
 **Why it works:** For each number, we compute what we *need* (the complement) and check if we've already *seen* it. The dict gives us O(1) lookup. Total: O(n).
 
-#### Solution 2: Set Intersection (The No-Loop Mindset)
+#### Solution 2: Recursion (The True No-Loop Mindset)
 
 ```python
-def two_sum_exists(nums, target):
-    num_set = set(nums)
-    return any(target - num in num_set for num in nums)
-
-# Or even more Pythonic — set intersection:
-def two_sum_exists_v2(nums, target):
-    s = set(nums)
-    complements = {target - n for n in nums}
-    return bool(s & complements)  # set intersection!
+def two_sum_recursive(nums, target, index=0, seen=None):
+    if seen is None:
+        seen = {}
+    if index >= len(nums):
+        return []
+        
+    curr = nums[index]
+    comp = target - curr
+    if comp in seen:
+        return [seen[comp], index]
+        
+    seen[curr] = index
+    return two_sum_recursive(nums, target, index + 1, seen)
 ```
+
+**Why it works:** It uses the call stack to iterate over the elements. This is a true "no-loop" implementation that passes the state forward without explicit `for` or `while` loops.
 
 #### Solution 3: Dict Comprehension
 
