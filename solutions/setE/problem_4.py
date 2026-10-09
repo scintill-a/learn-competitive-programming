@@ -1,13 +1,11 @@
-a, b, c = map(float, input().split())
-
-if a <= 0 or b <= 0 or c <= 0 or abs((a + b + c) - 180.0) > 1e-3:
-    print("Invalid Triangle")
-else:
-    max_ang = max(a, b, c)
-    if abs(max_ang - 90.0) < 1e-3:
-        kind = "Right"
-    elif max_ang > 90.0:
-        kind = "Obtuse"
-    else:
-        kind = "Acute"
-    print(f"Type: {kind} | Max Angle: {max_ang:.1f}°")
+nums = list(map(int, input().split()))
+k = int(input().strip())
+w_sum = sum(nums[:k])
+max_sum = w_sum
+best_idx = 0
+for i in range(k, len(nums)):
+    w_sum += nums[i] - nums[i - k]
+    if w_sum > max_sum:
+        max_sum = w_sum
+        best_idx = i - k + 1
+print(f"Max Sum: {max_sum} | Start Index: {best_idx}")

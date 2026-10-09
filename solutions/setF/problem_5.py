@@ -1,19 +1,25 @@
-n = int(input().strip())
-
-count = 0
-largest = 0
-curr = n
-d = 2
-
-while d * d <= curr:
-    while curr % d == 0:
-        count += 1
-        largest = d
-        curr //= d
-    d += 1
-
-if curr > 1:
-    count += 1
-    largest = curr
-
-print(f"Factor Count: {count} | Largest Factor: {largest}")
+nums = list(map(int, input().split()))
+nums.sort()
+res = []
+for i in range(len(nums) - 2):
+    if i > 0 and nums[i] == nums[i - 1]:
+        continue
+    l, r = i + 1, len(nums) - 1
+    while l < r:
+        s = nums[i] + nums[l] + nums[r]
+        if s == 0:
+            res.append([nums[i], nums[l], nums[r]])
+            while l < r and nums[l] == nums[l + 1]:
+                l += 1
+            while l < r and nums[r] == nums[r - 1]:
+                r -= 1
+            l += 1
+            r -= 1
+        elif s < 0:
+            l += 1
+        else:
+            r -= 1
+if not res:
+    print("Triplets: None")
+else:
+    print(f"Triplets: {', '.join(str(t) for t in res)}")

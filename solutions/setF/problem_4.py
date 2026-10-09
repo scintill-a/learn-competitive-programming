@@ -1,9 +1,25 @@
-x1, y1, x2, y2, x3, y3 = map(float, input().split())
+from collections import Counter
 
-cross = x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)
-area = 0.5 * abs(cross)
+s = input().strip()
+p = input().strip()
 
-if area < 1e-3:
-    print("Points are Collinear")
+if len(s) < len(p):
+    print("Anagram Indices: None")
 else:
-    print(f"Valid Triangle | Area: {area:.2f}")
+    p_cnt = Counter(p)
+    w_cnt = Counter(s[:len(p)])
+    res = []
+    if w_cnt == p_cnt:
+        res.append(0)
+    k = len(p)
+    for i in range(k, len(s)):
+        w_cnt[s[i]] += 1
+        w_cnt[s[i - k]] -= 1
+        if w_cnt[s[i - k]] == 0:
+            del w_cnt[s[i - k]]
+        if w_cnt == p_cnt:
+            res.append(i - k + 1)
+    if not res:
+        print("Anagram Indices: None")
+    else:
+        print(f"Anagram Indices: {', '.join(map(str, res))}")

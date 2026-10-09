@@ -1,6 +1,12 @@
-import math
-
-r = float(input().strip())
-area = 3.0 * math.pi * (r ** 2)
-vol = (2.0 / 3.0) * math.pi * (r ** 3)
-print(f"Total Surface Area: {area:.2f} | Volume: {vol:.2f}")
+nums = list(map(int, input().split()))
+total = sum(nums)
+left = 0
+found = False
+for i, x in enumerate(nums):
+    if left == total - left - x:
+        print(f"Pivot Index: {i} | Value: {x}")
+        found = True
+        break
+    left += x
+if not found:
+    print("Pivot Index: -1")
